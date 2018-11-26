@@ -1,0 +1,43 @@
+#include <stdio.h>
+// определение символических констант
+#define YES 1
+#define NO 0
+void main( void )
+{
+int c; // текущий символ из потока
+int prev_c; // предыдущий символ
+int flag; // признак слова
+int cnt; // счётчик
+int found; // признак того, что буквы повторились
+int bukva = 'a';
+// начальные присваивания (инициализация переменных)
+cnt = 0;
+flag = NO;
+found = NO;
+prev_c = ' ';
+while( (c = getchar()) != EOF )
+        {
+        if( c == ' ' || c == '.' || c == '\n' || c == ',' )
+        {
+            if (found == YES)
+            {
+                cnt++;
+                found=NO;
+            }
+        }
+
+
+        else
+        {
+        if( bukva == c )
+        {
+        found = YES;
+        printf("nu\n" );
+        }
+
+        }
+
+        }
+    printf("number of words = %d\n", cnt );
+        return 0;
+}
