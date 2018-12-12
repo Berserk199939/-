@@ -1,0 +1,65 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include<string.h> //для работы со строками
+#include <windows.h>
+#include <conio.h>
+#pragma warning (disable:4996)
+int main()
+{
+	HANDLE hConsoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+	SetConsoleTextAttribute(hConsoleHandle, 0 | 15);
+	FILE *file;
+	char *fname = "test.txt";
+	char result_sting[125];
+	file = fopen(fname, "r");
+	if (file == NULL)
+{
+		printf("Error opening file! '%s'", fname);
+		return 0;
+	}
+	int i = 0, a = 0;
+	char *real_tail;
+	while (fgets(result_sting, sizeof(result_sting), file))//объем хранения в байтах для типа операнд
+	{
+		real_tail = "";
+		if (result_sting[strlen(result_sting) - 1] == '\n')
+		{
+			result_sting[strlen(result_sting) - 1] = '\0';
+		}
+		int flag_1 = strstr(result_sting, "const ");
+		int flag_2 = strstr(result_sting, "=0x");
+		int flag_3 = strstr(result_sting, "=0X");
+		int flag_4 = strstr(result_sting, "=0");
+		int flag_5 = strstr(result_sting, "=1");
+		int flag_6 = strstr(result_sting, "=2");
+		int flag_7 = strstr(result_sting, "=3");
+		int flag_8 = strstr(result_sting, "=4");
+		int flag_9 = strstr(result_sting, "=5");
+		int flag_10 = strstr(result_sting, "=6");
+		int flag_11 = strstr(result_sting, "=7");
+		int flag_12 = strstr(result_sting, "=8");
+		int flag_13 = strstr(result_sting, "=9");
+		if (flag_1 != NULL && ((flag_2 != NULL)||(flag_3 != NULL) || (flag_4 != NULL)||(flag_5 != NULL)||(flag_6 != NULL)||(flag_7 != NULL)||(flag_8 != NULL)||(flag_9 != NULL)||(flag_10 != NULL)||(flag_11 != NULL)||(flag_12 != NULL)||(flag_13 != NULL)))
+		{
+			SetConsoleTextAttribute(hConsoleHandle, 10 | 0);
+			a = 0;
+			while (result_sting[a-1]!= ';')
+                {
+                printf("%c", result_sting[a]);
+                a++;
+                }
+			SetConsoleTextAttribute(hConsoleHandle, 0 | 15);
+			for (a;result_sting[a]!='\0';a++)
+                printf("%c", result_sting[a]);
+            printf("\n");
+		}
+		else
+		{
+			SetConsoleTextAttribute(hConsoleHandle, 0 | 15);
+			printf("%s%s\n", result_sting, real_tail);
+		}
+	}
+	fclose(file);
+	_getch();
+	return 0;
+}
