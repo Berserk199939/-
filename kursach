@@ -1,0 +1,176 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+
+typedef struct Pair{
+	char ing_name[20];//название ингредиента
+	double count;//размер порции
+}Pair;
+
+typedef struct Dish{
+	char name[20];//название блюда
+	int ingrLen;//кол-во ингридиентов
+	Pair ingr[20];//ингридиенты
+	char description[60];//описание рецепта
+}Dish;
+
+typedef struct DishPair{
+	int count;
+	Dish dish;
+}DishPair;
+
+void Add(Dish *dish){//добавление новых ингридиентов
+	int i;
+	printf("\nEnter dish name: ");
+	scanf("%s", dish->name);
+	printf("\nEnter dish description: ");
+	scanf("%s", dish->description);
+	printf("\nEnter ingridients count: ");
+	scanf("%d", &dish->ingrLen);
+	for(i = 0; i < dish->ingrLen; i++){
+		scanf("%s %lf", dish->ingr[i].ing_name, &dish->ingr[i].count);
+	}
+}
+
+void Delete(Dish * dish, int len){//удалениерецепта
+	char name[128];
+	int i;
+	printf("\nEnter name: ");
+	scanf("%s", name);
+	for(i = 0; i < len; i++){
+		if(strcmp(dish[i].name, name) == 0) break;
+	}
+	for(;i < len - 1; i++){
+		dish[i] = dish[i + 1];
+	}
+}
+
+void ShowAlf(Dish * dish, int len){//выводбазывалфавитномпорядке
+	int i, j;
+	Dish temp;
+	for (i = 0 ; i <  len - 1; i++){//сортировкапузырьком
+		for (j = 0 ; j < j - i - 1; j++){
+			if (strcmp(dish[j].name, dish[j+1].name) > 0){
+				temp = dish[j];
+				dish[j] = dish[j+1];
+				dish[j + 1] = temp;
+			}
+		}
+	}
+	for (i = 0 ; i < len; i++){
+		printf("\nName: %s", dish[i].name);
+		printf("\nDescription: %s", dish[i].description);
+		for(j = 0; j < dish[i].ingrLen; j++){
+			printf("\n%s : %lf", dish[i].ingr[j].ing_name, dish[i].ingr[j].count);
+		}
+	}
+}
+
+int cmp(const void*f, const void*s){
+	return ((DishPair*)f)->count < ((DishPair*)s)->count;
+}
+
+void FindRecept(Dish * dish, int len){//поискрецептовпонеполномусовпадению
+	int i, j, k, l, lk;
+	DishPair dp[10];
+	int searchCnt;
+	char search[20][20];
+	int size = 0;
+	printf("\nEnter search count: ");//кол-во параметров для поиска
+	scanf("%d", &searchCnt);
+	for(i = 0; i < searchCnt; i++){
+		scanf("%s", search[i]); 
+	}
+	for(i = 0; i < len; i++){
+		for(j = 0; j < dish[i].ingrLen; j++){
+			for(k = 0; k < searchCnt; k++){
+				if(strcmp(dish[i].ingr[j].ing_name, search[k]) == 0){
+					dp[size].dish = dish[i];
+					dp[size].count = 0;
+					for(l = 0; l < dish[i].ingrLen; l++){
+						for(lk = 0; lk < searchCnt; lk++){
+							if(strcmp(dish[i].ingr[l].ing_name, search[lk]) == 0){
+								lk = 100;
+								dp[size].count++;
+								strcat(dp[size].dish.ingr[l].ing_name, " : +");
+								break;
+							}
+						}
+						if(lk != 100){
+							strcat(dp[size].dish.ingr[l].ing_name, " : -");
+						}
+					}	
+					size++;
+					j = dish[i].ingrLen;
+					break;
+				}
+			}
+		}
+	}
+	qsort(dp, size, sizeof(*dp), cmp);//сортировка
+
+	printf("\n%s :\n", dp[0].dish.name);//выводсамогорецепта
+	printf("\n%s\n", dp[0].dish.description);
+	for(j = 0; j < dp[0].dish.ingrLen; j++){
+		printf("%s\n", dp[0].dish.ingr[j].ing_name);
+	}
+
+}
+
+void Save(Dish * dish, int len){//сохранениевфайл
+	int i, j;
+	FILE *fout = fopen("db.bin", "w");
+	fprintf(fout, "%d\n", len);
+	for(i = 0; i < len; i++){
+		fprintf(fout, "%s\n", dish[i].name);
+		fprintf(fout, "%s\n", dish[i].description);
+		fprintf(fout, "%d\n", dish[i].ingrLen);
+		for(j = 0; j < dish[i].ingrLen; j++){
+			fprintf(fout, "%s  %lf\n", dish[i].ingr[j].ing_name, dish[i].ingr[j].count);
+		}
+	}
+	fclose(fout);
+}
+
+void Load(Dish * dish, int *len){//считываниеизфайла
+	int i, j;
+	FILE *fout = fopen("db.bin", "r");
+	fscanf(fout, "%d", len);
+	for(i = 0; i < *len; i++){
+		fscanf(fout, "%s", dish[i].name);
+		fscanf(fout, "%s", dish[i].description);
+		fscanf(fout, "%d", &dish[i].ingrLen);
+		for(j = 0; j < dish[i].ingrLen; j++){
+			fscanf(fout, "%s  %lf", dish[i].ingr[j].ing_name, &dish[i].ingr[j].count);
+		}
+	}
+	fclose(fout);
+}
+
+int main(){
+	Dish dish[100];
+	int len = 0;
+	char i;
+	Load(dish, &len);
+	do{
+		printf("\na. exit\nb. add\nc. delete\nd. show\ne. find\n");
+		fflush(stdin);
+		scanf("%c", &i);
+		if(i == 'b'){
+			Add(&dish[len]);
+			len += 1;
+		}
+		else if(i == 'c'){
+			Delete(dish, len);
+			len -= 1;
+		}
+		else if(i == 'd'){
+		    ShowAlf(dish, len);
+		}
+		else if(i == 'e'){
+			FindRecept(dish,len);
+		}
+		Save(dish, len);	
+	}while(i != 'a');
+}
