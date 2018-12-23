@@ -1,190 +1,276 @@
-char gold;
-int gore;
-float gth;
 #include <stdio.h>
 #include <stdlib.h>
-int main(void);
-int kkk=10;
-int main (void)
-{
-    system("chcp 1251");
-    int i = 0;
-    char *str;
+
+int i = 0;
+	char *str;
 	char b;
 	char str2[1000];
-    int dl = 0, j=0, n=20, k=0, max=0;
-    int flag=0, raz=0;
-    char *dou;
-    char mass[228];
-    char inte[1000];
-    char ch[1000];
-    char fl[1000];
-
-
-
+	int dl = 0, j = 0, n = 20, k = 0, max = 0;
+	int flag = 0, raz = 0, nachi=0, nachc=0, nachf=0, nachd=0;
+	char *dou;
+	char mass[228];
+	char inte[1000];
+	char ch[1000];
+	char fl[1000];
+	char dbl[1000];
     FILE *fileputi;
-    FILE *fin;
-    fileputi = fopen("filesavedmodule.txt", "r");
 
-system("color 4");
-printf("TYPE    | Peremennie \n--------------------------------------------------\n");
-   inte[0] = 'i';    inte[1] = 'n';    inte[2] = 't';    inte[3] = ' ';   inte[4] = ' ';    inte[5] = ' ';    inte[6] = ' ';    inte[7] = ' ';    inte[8] = '|';    inte[9] = ' ';
-   ch[0] = 'c';    ch[1] = 'h';   ch[2] = 'a';    ch[3] = 'r';   ch[4] = ' ';    ch[5] = ' ';    ch[6] = ' ';    ch[7] = ' ';    ch[8] = '|';    ch[9] = ' ';
-   fl[0] = 'f';    fl[1] = 'l';   fl[2] = 'o';    fl[3] = 'a';   fl[4] = 't';    fl[5] = ' ';    fl[6] = ' ';    fl[7] = ' ';    fl[8] = '|';    fl[9] = ' ';
-    n=10;
-    int nc=10;
-    int nf = 10;
 
-    fseek(fileputi, 0, SEEK_END);
-    raz = ftell(fileputi);
+int main(void)
+{
+	system("chcp 1251");
 
-    for(i = 0; i<raz; i++)
-    {
-        fseek(fileputi, i, SEEK_SET);
-        b = getc(fileputi);
-        k++;
-        if ((b == '\n') || (b == '\0') || (i==raz-1))
-        {
-            if (k>max)
+
+
+	FILE *fin;
+	fileputi = fopen("filesavedmodule.txt", "r");
+
+	system("color 4");
+	printf("TYPE    | Peremennie \n--------------------------------------------------\n");
+	inte[0] = 'i';    inte[1] = 'n';    inte[2] = 't';    inte[3] = ' ';   inte[4] = ' ';    inte[5] = ' ';    inte[6] = ' ';    inte[7] = ' ';    inte[8] = '|';    inte[9] = ' ';
+	ch[0] = 'c';    ch[1] = 'h';   ch[2] = 'a';    ch[3] = 'r';   ch[4] = ' ';    ch[5] = ' ';    ch[6] = ' ';    ch[7] = ' ';    ch[8] = '|';    ch[9] = ' ';
+	fl[0] = 'f';    fl[1] = 'l';   fl[2] = 'o';    fl[3] = 'a';   fl[4] = 't';    fl[5] = ' ';    fl[6] = ' ';    fl[7] = ' ';    fl[8] = '|';    fl[9] = ' ';
+	dbl[0] = 'd';   dbl[1] = 'o';  dbl[2] = 'u';   dbl[3] = 'b';  dbl[4] = 'l';   dbl[5] = 'e';   dbl[6] = ' ';   dbl[7] = ' ';   dbl[8] = '|';   dbl[9] = ' ';
+	n = 10;
+	int nc = 10;
+	int nf = 10;
+	int nd = 10;
+
+	fseek(fileputi, 0, SEEK_END);
+	raz = ftell(fileputi);
+	int kol = 0;
+	for (i = 0; i<raz; i++)
+	{
+		fseek(fileputi, i, SEEK_SET);
+		b = getc(fileputi);
+		k++;
+		if (b == '\n')
+		{
+		    if (k>1)
             {
-                max = k;
-                k=0;
+                kol++;
             }
-        }
-    }
 
-    max++;
-fseek(fileputi, 0, SEEK_SET);
-str = (char*)malloc(max*sizeof(char));
+		}
+		if ((b == '\n') || (b == '\0') || (i == raz - 1))
+		{
+			if (k>max)
+			{
+				max = k;
+				k = 0;
+			}
+		}
+	}
 
-    while(!feof(fileputi))
-  {
+	max++;
+	fseek(fileputi, 0, SEEK_SET);
+	str = (char*)malloc(max * sizeof(char));
+	//int r=0;
+	kol++;
+	for (int r=0; r!=kol; r++)//while (r!=kol)
+	{
 
-    fgets(str, max, fileputi);
-    for (i=0; i<=(max); i++)
-    {
-        if (str[i] == '\n' || i==max)
-        {
-            str[i] = '\0';
-            break;
-        }
-    }
-        fin = fopen(str, "r");
-        if (fin==NULL)
-        {
-            printf("error file %s", str);
-            printf(" no found");
-        }
+		flag = 0;
+
+		fgets(str, max, fileputi);
+		for (i = 0; i <= (max); i++)
+		{
+			if (str[i] == '\n' || i == max)
+			{
+				str[i] = '\0';
+				break;
+			}
+		}
+		fin = fopen(str, "r");
+		if (fin == NULL)
+		{
+		    vivod();
+			printf("error file %s", str);
+			printf(" no found");
+			system("pause");
+			//return 0;
+		}
 
 
 
+		while (!feof(fin))
+		{
+			fgets(str2, 1000, fin);
 
-        while(!feof(fin))
-        {
-            fgets(str2, 100, fin);
-            //system("pause");
-            //i=0;
 
-             for (i=0; str2[i]!= '\n'; i++)//while (str2[i] != '\n')
-            {
-                if (str2[i] == '{' || str2[i] == '(')
-                    {
-                         flag++;
-                    }
-                 if (str2[i] == '}' || str2[i] == ')')
-                    {
-                         flag--;
-                    }
-/**************************************************************************************************************************************************/
-                if (str2[i]== 't' && str2[i-1]== 'n' && str2[i-2]== 'i' && flag == 0)
-                {
-                    i++;
-                    while(str2[i+1] == ' ')
-                        i++;
-                    if (str2[i]== ' ' && str2[i+1]!= 'm' && str2[i+2]!= 'a' && str2[i+3]!= 'i' && str2[i+4] != 'n')
-                    {
-                        while (str2[i] != ';')
-                        {
+			for (i = 0; str2[i] != '\n'; i++)
+			{
+				//if (str2[i] == ';')
+					//break;
+				if (str2[i] == '{' || str2[i] == '(')
+				{
+					flag++;
+				}
+				if (str2[i] == '}' || str2[i] == ')')
+				{
+					flag--;
+				}
+				/**************************************************************************************************************************************************/
+				if (str2[i] == 't' && str2[i - 1] == 'n' && str2[i - 2] == 'i' && flag == 0)
+				{
+					i++;
+					nachi = n;
 
-                            if (str2[i] != ',')
+					while ((str2[i] != ';'))
+					{
+						if (str2[i] == '(')
+						{
+							inte[nachi+1] = '\0';
+							flag++;
+							n = nachi+1;
+							break;
+						}
+						if (str2[i] == '\n')
+							break;
+						if (str2[i] != ',')
+						{
+						    if (str2[i] !='*')
                             {
-
-                                inte[n]=str2[i];
+                                inte[n] = str2[i];
                                 n++;
                             }
-                            i++;
-                        }
-                    }
 
-                        break;
-                }
-/**************************************************************************************************************************************************/
-                 if (str2[i]== 'r' && str2[i-1]== 'a' && str2[i-2]== 'h' && str2[i-3]== 'c' && flag == 0)
-                {
-                    i++;
-                       while (str2[i] != ';')
-                        {
+						}
+						i++;
+					}
 
-                            if (str2[i] != ',')
+
+
+				}
+				/**************************************************************************************************************************************************/
+				if (str2[i] == 'r' && str2[i - 1] == 'a' && str2[i - 2] == 'h' && str2[i - 3] == 'c' && flag == 0)
+				{
+					i++;
+					nachc = nc;
+
+					while ((str2[i] != ';'))
+					{
+						if (str2[i] == '(')
+						{
+							ch[nachc + 1] = '\0';
+							flag++;
+							nc = nachc + 1;
+							break;
+						}
+						if (str2[i] == '\n')
+							break;
+						if (str2[i] != ',')
+						{
+						    if (str2[i] !='*')
                             {
-                                ch[nc]=str2[i];
+                                ch[nc] = str2[i];
                                 nc++;
                             }
-                            i++;
-                        }
+						}
+						i++;
+					}
+				}
 
-                        break;
-                }
+				/**************************************************************************************************************************************************/
+				if (str2[i] == 't' && str2[i - 1] == 'a' && str2[i - 2] == 'o' && str2[i - 3] == 'l' && flag == 0)
+				{
+					i++;
+					nachf = nf;
 
-/**************************************************************************************************************************************************/
-                 if (str2[i]== 't' && str2[i-1]== 'a' && str2[i-2]== 'o' && str2[i-3]== 'l' && flag == 0)
-                {
-                    i++;
-                       while (str2[i] != ';')
-                        {
-                            if (str2[i] != ',')
+					while ((str2[i] != ';'))
+					{
+						if (str2[i] == '(')
+						{
+							fl[nachf + 1] = '\0';
+							flag++;
+							nf = nachf + 1;
+							break;
+						}
+						if (str2[i] == '\n')
+							break;
+						if (str2[i] != ',')
+						{
+						    if (str2[i] !='*')
                             {
-                                fl[nf]=str2[i];
+                                fl[nf] = str2[i];
                                 nf++;
                             }
-                            i++;
-                        }
+						}
+						i++;
+					}
+				}
+				/**************************************************************************************************************************************************/
+				if (str2[i] == 'e' && str2[i - 1] == 'l' && str2[i - 2] == 'b' && str2[i - 3] == 'u' && str2[i-4]=='o' && str2[i-5]=='d' && flag == 0)
+				{
+					i++;
+					nachd = nd;
 
-                        break;
-                }
-/**************************************************************************************************************************************************/
-                //i++;
+					while ((str2[i] != ';'))
+					{
+						if (str2[i] == '(')
+						{
+							dbl[nachd + 1] = '\0';
+							flag++;
+							nd = nachd + 1;
+							break;
+						}
+						if (str2[i] == '\n')
+							break;
+						if (str2[i] != ',')
+						{
+						    if (str2[i] !='*')
+							{
+                                dbl[nd] = str2[i];
+                                nd++;
+							}
+						}
+						i++;
+					}
+				}
+				/**************************************************************************************************************************************************/
 
-            }
-
-
-        }
-
-
-  }
- inte[n]='\0';
- ch[nc]='\0';
- fl[nf]='\0';
-//
-
-
-
-  for (int j = 0; inte[j] != '\0'; j++)
-  {
-      printf("%c", inte[j]);
-  }
-printf("\n--------------------------------------------------------\n");
-  for (int j = 0; ch[j] != '\0'; j++)
-  {
-      printf("%c", ch[j]);
-  }
-  printf("\n--------------------------------------------------------\n");
-  for (int j = 0; fl[j] != '\0'; j++)
-  {
-      printf("%c", fl[j]);
-  }
-    fclose(fileputi);
-    return 0;
+			}
 
 
+		}
+
+		//r++;
+	}
+	inte[n] = '\0';
+	ch[nc] = '\0';
+	fl[nf] = '\0';
+	dbl[nd] = '\0';
+
+
+vivod();
+	system("pause");
+	return 0;
+
+
+}
+
+void vivod()
+{
+
+	for (int j = 0; inte[j] != '\0'; j++)
+	{
+		printf("%c", inte[j]);
+	}
+	printf("\n--------------------------------------------------------\n");
+	for (int j = 0; ch[j] != '\0'; j++)
+	{
+		printf("%c", ch[j]);
+	}
+	printf("\n--------------------------------------------------------\n");
+	for (int j = 0; fl[j] != '\0'; j++)
+	{
+		printf("%c", fl[j]);
+	}
+	printf("\n--------------------------------------------------------\n");
+	for (int j = 0; dbl[j] != '\0'; j++)
+	{
+		printf("%c", dbl[j]);
+	}
+	printf("\n--------------------------------------------------------\n");
+	fclose(fileputi);
 }
