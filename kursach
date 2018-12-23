@@ -2,175 +2,248 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include "locale.h"
 
-typedef struct Pair{
+typedef struct Pair {
 	char ing_name[20];//название ингредиента
 	double count;//размер порции
 }Pair;
 
-typedef struct Dish{
+typedef struct Dish {
 	char name[20];//название блюда
 	int ingrLen;//кол-во ингридиентов
 	Pair ingr[20];//ингридиенты
 	char description[60];//описание рецепта
 }Dish;
 
-typedef struct DishPair{
+typedef struct DishPair {
 	int count;
 	Dish dish;
 }DishPair;
 
-void Add(Dish *dish){//добавление новых ингридиентов
+void Add(Dish *dish) {//добавление новых ингридиентов
 	int i;
-	printf("\nEnter dish name: ");
+	printf("\nНазвание блюда: ");
 	scanf("%s", dish->name);
-	printf("\nEnter dish description: ");
+	printf("\nОписания блюда: ");
 	scanf("%s", dish->description);
-	printf("\nEnter ingridients count: ");
-	scanf("%d", &dish->ingrLen);
-	for(i = 0; i < dish->ingrLen; i++){
+	printf("\nКоличество ингридиентов: ");
+	while (1)
+	{
+		scanf("%d", &dish->ingrLen);
+		if (dish->ingrLen < 0)
+			printf("\n\aВведены некорректные данные. Повторите ввод\n");
+		else
+			break;
+		rewind(stdin);
+
+	}
+	printf("\nВведите название ингридиента и его вес в килограммах (в формате: Имя Вес)\n");
+	for (i = 0; i < dish->ingrLen; i++) {
 		scanf("%s %lf", dish->ingr[i].ing_name, &dish->ingr[i].count);
 	}
 }
 
-void Delete(Dish * dish, int len){//удалениерецепта
+void Delete(Dish * dish, int len) {//удалениерецепта
 	char name[128];
 	int i;
-	printf("\nEnter name: ");
-	scanf("%s", name);
-	for(i = 0; i < len; i++){
-		if(strcmp(dish[i].name, name) == 0) break;
-	}
-	for(;i < len - 1; i++){
-		dish[i] = dish[i + 1];
-	}
+	
+		printf("\n*Удаление*\n");
+		printf("\nСписок всех блюд: ");
+		for (i = 0; i < len; i++)
+			printf("\n%d) %s ", i + 1, dish[i].name);
+		printf("\nВыберите номер: ");
+		scanf("%d", &i);
+		i--;
+		if ((i >= len) || (i < 0))
+			printf("\n\aТакого номера блюда нет\n");
+		else
+		{
+			for (; i < len - 1; i++)
+				dish[i] = dish[i + 1];
+			printf("\n*Удалено*\n");
+		}
 }
 
-void ShowAlf(Dish * dish, int len){//выводбазывалфавитномпорядке
+void ShowAlf(Dish * dish, int len) {//выводбазывалфавитномпорядке
 	int i, j;
 	Dish temp;
-	for (i = 0 ; i <  len - 1; i++){//сортировкапузырьком
-		for (j = 0 ; j < j - i - 1; j++){
-			if (strcmp(dish[j].name, dish[j+1].name) > 0){
-				temp = dish[j];
-				dish[j] = dish[j+1];
-				dish[j + 1] = temp;
+	if (len == 0)
+		printf("\n\aБаза пуста\n");
+	else
+	{
+		for (i = 0; i < len - 1; i++) {//сортировкапузырьком
+			for (j = 0; j < j - i - 1; j++) {
+				if (strcmp(dish[j].name, dish[j + 1].name) > 0) {
+					temp = dish[j];
+					dish[j] = dish[j + 1];
+					dish[j + 1] = temp;
+				}
 			}
 		}
-	}
-	for (i = 0 ; i < len; i++){
-		printf("\nName: %s", dish[i].name);
-		printf("\nDescription: %s", dish[i].description);
-		for(j = 0; j < dish[i].ingrLen; j++){
-			printf("\n%s : %lf", dish[i].ingr[j].ing_name, dish[i].ingr[j].count);
+		for (i = 0; i < len; i++) {
+			printf("\nНазвание: %s", dish[i].name);
+			printf("\nОписание: %s", dish[i].description);
+			printf("\nИнгридиенты:");
+			for (j = 0; j < dish[i].ingrLen; j++)
+				printf("\n\t%d) %s - %.2lf кг", j, dish[i].ingr[j].ing_name, dish[i].ingr[j].count);
+			printf("\n");
 		}
 	}
 }
 
-int cmp(const void*f, const void*s){
+int cmp(const void*f, const void*s) {
 	return ((DishPair*)f)->count < ((DishPair*)s)->count;
 }
 
-void FindRecept(Dish * dish, int len){//поискрецептовпонеполномусовпадению
+void FindRecept(Dish * dish, int len) {//поискрецептовпонеполномусовпадению
 	int i, j, k, l, lk;
 	DishPair dp[10];
 	int searchCnt;
 	char search[20][20];
 	int size = 0;
-	printf("\nEnter search count: ");//кол-во параметров для поиска
-	scanf("%d", &searchCnt);
-	for(i = 0; i < searchCnt; i++){
-		scanf("%s", search[i]); 
-	}
-	for(i = 0; i < len; i++){
-		for(j = 0; j < dish[i].ingrLen; j++){
-			for(k = 0; k < searchCnt; k++){
-				if(strcmp(dish[i].ingr[j].ing_name, search[k]) == 0){
-					dp[size].dish = dish[i];
-					dp[size].count = 0;
-					for(l = 0; l < dish[i].ingrLen; l++){
-						for(lk = 0; lk < searchCnt; lk++){
-							if(strcmp(dish[i].ingr[l].ing_name, search[lk]) == 0){
-								lk = 100;
-								dp[size].count++;
-								strcat(dp[size].dish.ingr[l].ing_name, " : +");
-								break;
+	if (len == 0)
+		printf("\n\aБаза пуста\n");
+	else
+	{
+		printf("\nВведите количество параметров: ");//кол-во параметров для поиска
+		while (1)
+		{
+			scanf("%d", &searchCnt);
+			if (searchCnt < 0)
+				printf("\n\aВведены некорректные данные. Повторите ввод\n");
+			else
+				break;
+			rewind(stdin);
+		}
+		for (i = 0; i < searchCnt; i++) {
+			scanf("%s", search[i]);
+		}
+		for (i = 0; i < len; i++) {
+			for (j = 0; j < dish[i].ingrLen; j++) {
+				for (k = 0; k < searchCnt; k++) {
+					if (strcmp(dish[i].ingr[j].ing_name, search[k]) == 0) {
+						dp[size].dish = dish[i];
+						dp[size].count = 0;
+						for (l = 0; l < dish[i].ingrLen; l++) {
+							for (lk = 0; lk < searchCnt; lk++) {
+								if (strcmp(dish[i].ingr[l].ing_name, search[lk]) == 0) {
+									lk = 100;
+									dp[size].count++;
+									strcat(dp[size].dish.ingr[l].ing_name, " : +");
+									break;
+								}
+							}
+							if (lk != 100) {
+								strcat(dp[size].dish.ingr[l].ing_name, " : -");
 							}
 						}
-						if(lk != 100){
-							strcat(dp[size].dish.ingr[l].ing_name, " : -");
-						}
-					}	
-					size++;
-					j = dish[i].ingrLen;
-					break;
+						size++;
+						j = dish[i].ingrLen;
+						break;
+					}
 				}
 			}
 		}
+		qsort(dp, size, sizeof(*dp), cmp);//сортировка
+		for (i = 0; i < size; i++)
+		{
+			printf("\n%s : ", dp[i].dish.name);//выводсамогорецепта
+			printf("%s\n", dp[i].dish.description);
+			printf("Ингридиенты: \n");
+			for (j = 0; j < dp[i].dish.ingrLen; j++) {
+				printf("\t%s\n", dp[i].dish.ingr[j].ing_name);
+			}
+		}
 	}
-	qsort(dp, size, sizeof(*dp), cmp);//сортировка
-
-	printf("\n%s :\n", dp[0].dish.name);//выводсамогорецепта
-	printf("\n%s\n", dp[0].dish.description);
-	for(j = 0; j < dp[0].dish.ingrLen; j++){
-		printf("%s\n", dp[0].dish.ingr[j].ing_name);
-	}
-
 }
 
-void Save(Dish * dish, int len){//сохранениевфайл
+void Save(Dish * dish, int len) {//сохранениевфайл
 	int i, j;
-	FILE *fout = fopen("db.bin", "w");
+	FILE *fout = fopen("db.bin", "wb");
 	fprintf(fout, "%d\n", len);
-	for(i = 0; i < len; i++){
+	for (i = 0; i < len; i++) {
 		fprintf(fout, "%s\n", dish[i].name);
 		fprintf(fout, "%s\n", dish[i].description);
 		fprintf(fout, "%d\n", dish[i].ingrLen);
-		for(j = 0; j < dish[i].ingrLen; j++){
+		for (j = 0; j < dish[i].ingrLen; j++) {
 			fprintf(fout, "%s  %lf\n", dish[i].ingr[j].ing_name, dish[i].ingr[j].count);
 		}
 	}
 	fclose(fout);
 }
 
-void Load(Dish * dish, int *len){//считываниеизфайла
+void Load(Dish * dish, int *len) {//считываниеизфайла
 	int i, j;
-	FILE *fout = fopen("db.bin", "r");
+	FILE *fout = fopen("db.bin", "rb");
+	if (fout == NULL)
+		return;
 	fscanf(fout, "%d", len);
-	for(i = 0; i < *len; i++){
+	for (i = 0; i < *len; i++) {
 		fscanf(fout, "%s", dish[i].name);
 		fscanf(fout, "%s", dish[i].description);
 		fscanf(fout, "%d", &dish[i].ingrLen);
-		for(j = 0; j < dish[i].ingrLen; j++){
+		for (j = 0; j < dish[i].ingrLen; j++) {
 			fscanf(fout, "%s  %lf", dish[i].ingr[j].ing_name, &dish[i].ingr[j].count);
 		}
 	}
 	fclose(fout);
 }
 
-int main(){
+int main() 
+{
 	Dish dish[100];
 	int len = 0;
-	char i;
+	int i;
+	setlocale(LC_ALL, "");
 	Load(dish, &len);
-	do{
-		printf("\na. exit\nb. add\nc. delete\nd. show\ne. find\n");
+	do
+	{
+		printf("Введите:\n|1| - Добавить рецепт\n");
+		printf("|2| - Удалить рецепт\n");
+		printf("|3| - Вывести в алфавитном порядке\n");
+		printf("|4| - Найти рецепт по ингридиентам\n");
+		printf("|0| - Выйти\n>");
 		fflush(stdin);
-		scanf("%c", &i);
-		if(i == 'b'){
-			Add(&dish[len]);
-			len += 1;
+		scanf("%d", &i);
+		switch (i)
+		{
+		case 1:
+			if (len == 0)
+				printf("\n\aБаза пуста\n");
+			else
+			{
+				Add(&dish[len]);
+				len += 1;
+				break;
+			}
+		case 2: 
+		{
+			if (len == 0)
+				printf("\n\aБаза пуста\n");
+			else
+			{
+				Delete(dish, len);
+				len -= 1;
+			}
+			break;
 		}
-		else if(i == 'c'){
-			Delete(dish, len);
-			len -= 1;
+		case 3:
+			ShowAlf(dish, len);
+			break;
+		case 4: 
+			FindRecept(dish, len);
+			break;
+		case 0:
+			Save(dish, len);
+			return 0;
+			break;
+		default:
+			printf("\n\aВведена неизвестная команда. Повторите ввод\n");
+			break;
 		}
-		else if(i == 'd'){
-		    ShowAlf(dish, len);
-		}
-		else if(i == 'e'){
-			FindRecept(dish,len);
-		}
-		Save(dish, len);	
-	}while(i != 'a');
+		Save(dish, len);
+		printf("\n");
+		rewind(stdin);
+	} while (i != 0);
 }
