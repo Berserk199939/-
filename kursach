@@ -47,7 +47,7 @@ void Add(Dish *dish) {//добавление новых ингридиентов
 void Delete(Dish * dish, int len) {//удалениерецепта
 	char name[128];
 	int i;
-	
+
 		printf("\n*Удаление*\n");
 		printf("\nСписок всех блюд: ");
 		for (i = 0; i < len; i++)
@@ -190,7 +190,7 @@ void Load(Dish * dish, int *len) {//считываниеизфайла
 	fclose(fout);
 }
 
-int main() 
+int main()
 {
 	Dish dish[100];
 	int len = 0;
@@ -209,15 +209,10 @@ int main()
 		switch (i)
 		{
 		case 1:
-			if (len == 0)
-				printf("\n\aБаза пуста\n");
-			else
-			{
 				Add(&dish[len]);
 				len += 1;
 				break;
-			}
-		case 2: 
+		case 2:
 		{
 			if (len == 0)
 				printf("\n\aБаза пуста\n");
@@ -231,7 +226,7 @@ int main()
 		case 3:
 			ShowAlf(dish, len);
 			break;
-		case 4: 
+		case 4:
 			FindRecept(dish, len);
 			break;
 		case 0:
